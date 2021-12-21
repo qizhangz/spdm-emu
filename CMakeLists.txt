@@ -522,6 +522,7 @@ endif()
     ADD_SUBDIRECTORY(${LIBSPDM_DIR}/os_stub/debuglib out/debuglib.out)
     ADD_SUBDIRECTORY(${LIBSPDM_DIR}/os_stub/debuglib_null out/debuglib_null.out)
     ADD_SUBDIRECTORY(${LIBSPDM_DIR}/os_stub/rnglib out/rnglib.out)
+    ADD_SUBDIRECTORY(${LIBSPDM_DIR}/os_stub/timelib out/timelib.out)
     ADD_SUBDIRECTORY(${LIBSPDM_DIR}/os_stub/malloclib out/malloclib.out)
     ADD_SUBDIRECTORY(${LIBSPDM_DIR}/os_stub/spdm_device_secret_lib_sample out/spdm_device_secret_lib_sample.out)
 

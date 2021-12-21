@@ -5,6 +5,7 @@
 **/
 
 #include "spdm_requester_emu.h"
+#include "hal/library/timelib.h"
 
 void *m_spdm_context;
 SOCKET m_socket;
@@ -51,6 +52,7 @@ return_status spdm_device_send_message(IN void *spdm_context,
 {
     boolean result;
 
+    libspdm_settimer(timeout);
     result = send_platform_data(m_socket, SOCKET_SPDM_COMMAND_NORMAL,
                     request, (uint32_t)request_size);
     if (!result) {
@@ -84,6 +86,9 @@ return_status spdm_device_receive_message(IN void *spdm_context,
                errno
 #endif
         );
+        if(libspdm_checktimer(timeout)) {
+            return RETURN_TIMEOUT;
+        }
         return RETURN_DEVICE_ERROR;
     }
     return RETURN_SUCCESS;
