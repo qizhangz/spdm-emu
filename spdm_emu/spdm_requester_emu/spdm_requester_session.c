@@ -57,11 +57,14 @@ libspdm_return_t get_digest_cert_in_session(const uint32_t *session_id)
     libspdm_zero_mem(cert_chain, sizeof(cert_chain));
     libspdm_zero_mem(measurement_hash, sizeof(measurement_hash));
 
+    printf("QIZ: libspdm_get_digest_in_session start\n");
     status = libspdm_get_digest_in_session(spdm_context, session_id, &slot_mask,
                                            total_digest_buffer);
+    printf("QIZ: libspdm_get_digest_in_session - %x\n", (uint32_t)status);
     if (LIBSPDM_STATUS_IS_ERROR(status)) {
         return status;
     }
+#if 0
     if (m_use_slot_id != 0xFF) {
         status = libspdm_get_certificate_in_session(
             spdm_context, session_id, m_use_slot_id, &cert_chain_size, cert_chain, NULL, 0);
@@ -69,6 +72,7 @@ libspdm_return_t get_digest_cert_in_session(const uint32_t *session_id)
             return status;
         }
     }
+#endif
 
     return status;
 }
@@ -80,24 +84,32 @@ libspdm_return_t do_session_via_spdm(bool use_psk)
     uint32_t session_id;
     uint8_t heartbeat_period;
     uint8_t measurement_hash[LIBSPDM_MAX_HASH_SIZE];
+#if 0
     size_t response_size;
     bool result;
     uint32_t response;
+#endif
 
     spdm_context = m_spdm_context;
 
+    printf("do_session_via_spdm start\n");
+
     heartbeat_period = 0;
     libspdm_zero_mem(measurement_hash, sizeof(measurement_hash));
+    printf(">>>>>>>>>>>>>>> libspdm_start_session start <<<<<<<<<<<<<<<<<<<\n");
     status = libspdm_start_session(spdm_context, use_psk,
                                    m_use_measurement_summary_hash_type,
                                    m_use_slot_id, m_session_policy, &session_id,
                                    &heartbeat_period, measurement_hash);
+    printf(">>>>>>>>>>>>>>> libspdm_start_session end <<<<<<<<<<<<<<<<<<<\n");
     if (LIBSPDM_STATUS_IS_ERROR(status)) {
         printf("libspdm_start_session - %x\n", (uint32_t)status);
         return status;
     }
 
+#if 0
     status = do_app_session_via_spdm(session_id);
+    printf("do_app_session_via_spdm - %x\n", (uint32_t)status);
     if (LIBSPDM_STATUS_IS_ERROR(status)) {
         printf("do_app_session_via_spdm - %x\n", (uint32_t)status);
         return status;
@@ -105,8 +117,10 @@ libspdm_return_t do_session_via_spdm(bool use_psk)
 
     if ((m_exe_session & EXE_SESSION_HEARTBEAT) != 0) {
         status = libspdm_heartbeat(spdm_context, session_id);
+        printf("libspdm_heartbeat - %x\n", (uint32_t)status);
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
             printf("libspdm_heartbeat - %x\n", (uint32_t)status);
+            return status;
         }
     }
 
@@ -163,6 +177,7 @@ libspdm_return_t do_session_via_spdm(bool use_psk)
         }
     }
 #endif /*LIBSPDM_ENABLE_CAPABILITY_MEAS_CAP*/
+#endif
 
 #if (LIBSPDM_ENABLE_CAPABILITY_CERT_CAP && LIBSPDM_ENABLE_CAPABILITY_CHAL_CAP)
     status = get_digest_cert_in_session(&session_id);
@@ -172,6 +187,7 @@ libspdm_return_t do_session_via_spdm(bool use_psk)
     }
 #endif
 
+#if 0
     if (m_use_version >= SPDM_MESSAGE_VERSION_12) {      
         status = do_certificate_provising_via_spdm(&session_id);
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
@@ -180,6 +196,7 @@ libspdm_return_t do_session_via_spdm(bool use_psk)
             return status;
         }
     }
+#endif
 
     if ((m_exe_session & EXE_SESSION_NO_END) == 0) {
         status = libspdm_stop_session(spdm_context, session_id,
@@ -190,6 +207,7 @@ libspdm_return_t do_session_via_spdm(bool use_psk)
         }
     }
 
+    printf("do_session_via_spdm end\n");
     return status;
 }
 

@@ -40,8 +40,10 @@ spdm_authentication(void *context, uint8_t *slot_mask,
     size_t cert_chain_buffer_size;
 
     if ((m_exe_connection & EXE_CONNECTION_DIGEST) != 0) {
+        LIBSPDM_DEBUG((LIBSPDM_DEBUG_INFO, "QIZ: libspdm_get_digest start\n"));
         status = libspdm_get_digest(context, slot_mask,
                                     total_digest_buffer);
+        LIBSPDM_DEBUG((LIBSPDM_DEBUG_INFO, "QIZ: libspdm_get_digest status - 0x%x\n", status));
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
             return status;
         }
@@ -81,6 +83,7 @@ spdm_authentication(void *context, uint8_t *slot_mask,
         }
     }
 
+#if 0
     if ((m_exe_connection & EXE_CONNECTION_DIGEST) != 0) {
         status = libspdm_get_digest(context, slot_mask,
                                     total_digest_buffer);
@@ -106,6 +109,7 @@ spdm_authentication(void *context, uint8_t *slot_mask,
             return status;
         }
     }
+#endif
 
     return LIBSPDM_STATUS_SUCCESS;
 }
