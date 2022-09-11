@@ -145,7 +145,7 @@ bool platform_client_routine(uint16_t port_number)
     }
 #endif /*(LIBSPDM_ENABLE_CAPABILITY_CERT_CAP && LIBSPDM_ENABLE_CAPABILITY_CHAL_CAP)*/
 
-#if 0 //LIBSPDM_ENABLE_CAPABILITY_MEAS_CAP
+#if LIBSPDM_ENABLE_CAPABILITY_MEAS_CAP
     if ((m_exe_connection & EXE_CONNECTION_MEAS) != 0) {
         status = do_measurement_via_spdm(NULL);
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
@@ -158,9 +158,9 @@ bool platform_client_routine(uint16_t port_number)
     /* when use --trans NONE, skip secure session  */
     if (m_use_transport_layer == SOCKET_TRANSPORT_TYPE_NONE) {
         if (m_use_version >= SPDM_MESSAGE_VERSION_12) {      
-#if 0
+#if 1
             status = do_certificate_provising_via_spdm(NULL);
-            if (LIBSPDM_STATUS_IS_ERROR(status)) {
+            /*if (LIBSPDM_STATUS_IS_ERROR(status))*/ {
                     printf("do_certificate_provising_via_spdm - %x\n",
                         (uint32_t)status);
                 goto done;
@@ -172,7 +172,6 @@ bool platform_client_routine(uint16_t port_number)
     {
 #if (LIBSPDM_ENABLE_CAPABILITY_KEY_EX_CAP || LIBSPDM_ENABLE_CAPABILITY_PSK_EX_CAP)
         if (m_use_version >= SPDM_MESSAGE_VERSION_11) {
-#if 0
             if ((m_exe_session & EXE_SESSION_KEY_EX) != 0) {
                 status = do_session_via_spdm(false);
                 if (LIBSPDM_STATUS_IS_ERROR(status)) {
@@ -181,7 +180,6 @@ bool platform_client_routine(uint16_t port_number)
                     goto done;
                 }
             }
-#else
             if ((m_exe_session & EXE_SESSION_PSK) != 0) {
                 status = do_session_via_spdm(true);
                 if (LIBSPDM_STATUS_IS_ERROR(status)) {
@@ -190,7 +188,6 @@ bool platform_client_routine(uint16_t port_number)
                     goto done;
                 }
             }
-#endif
 
 #if 0
             if ((m_exe_session & EXE_SESSION_KEY_EX) != 0) {
