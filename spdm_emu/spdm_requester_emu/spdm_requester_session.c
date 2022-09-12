@@ -225,7 +225,7 @@ libspdm_return_t do_certificate_provising_via_spdm(uint32_t* session_id)
     csr_len = LIBSPDM_MAX_CSR_SIZE;
     libspdm_zero_mem(csr_form_get, sizeof(csr_form_get));
     if ((m_exe_session & EXE_SESSION_GET_CSR) != 0) {
-        status = libspdm_get_csr(spdm_context, NULL, 0, NULL, 0, NULL, csr_form_get,
+        status = libspdm_get_csr(spdm_context, NULL, 0, NULL, 0, session_id, csr_form_get,
                                 &csr_len);
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
             printf("libspdm_get_csr - %x\n",
@@ -252,7 +252,7 @@ libspdm_return_t do_certificate_provising_via_spdm(uint32_t* session_id)
     if ((m_exe_session & EXE_SESSION_SET_CERT) != 0) {
         slot_id = 0;
         status = libspdm_set_certificate(spdm_context, slot_id,
-                                        cert_chain_to_set, cert_chain_size_to_set, NULL);
+                                        cert_chain_to_set, cert_chain_size_to_set, session_id);
 
         if (LIBSPDM_STATUS_IS_ERROR(status)) {
             printf("libspdm_set_certificate - %x\n",
